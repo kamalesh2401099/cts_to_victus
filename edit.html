@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Member Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap 5 CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #eef2f7;
+    }
+    .container {
+      max-width: 700px;
+      margin-top: 50px;
+    }
+    .card {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    #editSection {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2 class="text-center mb-4">Edit Library Member Details</h2>
+  <div class="card p-4">
+    
+    <!-- Search Section -->
+    <div class="mb-3">
+      <label for="searchId" class="form-label">Enter Member ID (e.g., M001)</label>
+      <input type="text" class="form-control" id="searchId" placeholder="Enter Member ID" required>
+    </div>
+    <div class="text-end mb-4">
+      <button id="searchBtn" class="btn btn-primary">Search</button>
+    </div>
+
+    <!-- Editable Section -->
+    <div id="editSection">
+      <form id="editForm">
+        <div class="mb-3">
+          <label class="form-label">Member ID</label>
+          <input type="text" class="form-control" id="memberId" readonly>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Name</label>
+          <input type="text" class="form-control" id="name" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Phone</label>
+          <input type="tel" class="form-control" id="phone" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" id="email" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Address</label>
+          <textarea class="form-control" id="address" rows="2" required></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="status" required>
+            <option value="">-- Select Status --</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+        <div class="text-end">
+          <button type="submit" class="btn btn-success">Update</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // Simulated "database"
+  const users = {
+    "M001": {
+      name: "Harshini",
+      phone: "9876543210",
+      email: "harshini@example.com",
+      address: "123 Library Street",
+      status: "Active"
+    },
+    "M002": {
+      name: "Bob Williams",
+      phone: "9123456789",
+      email: "bob@example.com",
+      address: "456 Book Avenue",
+      status: "Inactive"
+    }
+  };
+
+  // Search button click
+  $("#searchBtn").click(function () {
+    const memberId = $("#searchId").val().trim().toUpperCase();
+    if (users[memberId]) {
+      const user = users[memberId];
+      $("#memberId").val(memberId);
+      $("#name").val(user.name);
+      $("#phone").val(user.phone);
+      $("#email").val(user.email);
+      $("#address").val(user.address);
+      $("#status").val(user.status);
+      $("#editSection").slideDown();
+    } else {
+      alert("Member not found.");
+      $("#editSection").slideUp();
+    }
+  });
+
+  // Form submission
+  $("#editForm").submit(function (e) {
+    e.preventDefault();
+    const memberId = $("#memberId").val();
+    users[memberId] = {
+      name: $("#name").val().trim(),
+      phone: $("#phone").val().trim(),
+      email: $("#email").val().trim(),
+      address: $("#address").val().trim(),
+      status: $("#status").val()
+    };
+    alert("Details for " + memberId + " have been updated.");
+  });
+</script>
+
+</body>
+</html>
