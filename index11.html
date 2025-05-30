@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Library Management System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-gradient sticky-top shadow-lg">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand fw-bold fs-4" href="#home">
+        <i class="fas fa-book-reader me-2"></i>Library
+      </a>
+      <div class="mx-auto w-50">
+        <input
+          class="form-control rounded-pill"
+          id="searchBar"
+          type="search"
+          placeholder="Search for books..."
+          aria-label="Search"
+        />
+      </div>
+      <ul class="navbar-nav ms-auto d-flex align-items-center gap-3">
+        <li class="nav-item">
+          <a class="nav-link active fw-semibold" href="#home">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fw-semibold" href="borrow.html">Borrow</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fw-semibold" href="return.html">Return</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fw-semibold" href="payment.html">Payment</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fw-semibold" href="membership.html">Membership</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fw-semibold" href="notification.html">
+            <i class="fas fa-bell fs-5"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fw-semibold" href="userProfile.html">
+            <i class="fas fa-user-circle fs-5"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Home Section -->
+  <section class="container mt-4" id="home">
+    <h2 class="section-title text-gradient">✨ New Arrivals</h2>
+    <div class="scrolling-wrapper-auto">
+      <div class="book-card">
+        <div class="book-info">
+          <h6>Atomic Habits</h6>
+          <p>James Clear</p>
+          <span class="badge bg-success">Available</span>
+        </div>
+      </div>
+      <div class="book-card">
+        <div class="book-info">
+          <h6>Harry Potter</h6>
+          <p>J.K. Rowling</p>
+          <span class="badge bg-danger">Unavailable</span>
+        </div>
+      </div>
+      <div class="book-card">
+        <div class="book-info">
+          <h6>The Alchemist</h6>
+          <p>Paulo Coelho</p>
+          <span class="badge bg-success">Available</span>
+        </div>
+      </div>
+      <div class="book-card">
+        <div class="book-info">
+          <h6>Psychology of Money</h6>
+          <p>Morgan Housel</p>
+          <span class="badge bg-success">Available</span>
+        </div>
+      </div>
+      <div class="book-card">
+        <div class="book-info">
+          <h6>Sapiens</h6>
+          <p>Yuval Noah Harari</p>
+          <span class="badge bg-success">Available</span>
+        </div>
+      </div>
+      <div class="book-card">
+        <div class="book-info">
+          <h6>Deep Work</h6>
+          <p>Cal Newport</p>
+          <span class="badge bg-danger">Unavailable</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Genre Section -->
+  <section class="container mt-5">
+    <h2 class="section-title text-gradient">📚 Fiction</h2>
+    <div class="scrolling-wrapper-auto mb-4">
+      <div class="book-genre-card"><div class="genre-info"><h6>1984</h6><p>George Orwell</p><span class="badge bg-success">Available</span></div></div>
+      <div class="book-genre-card"><div class="genre-info"><h6>The Alchemist</h6><p>Paulo Coelho</p><span class="badge bg-success">Available</span></div></div>
+      <div class="book-genre-card"><div class="genre-info"><h6>To Kill a Mockingbird</h6><p>Harper Lee</p><span class="badge bg-danger">Unavailable</span></div></div>
+      <div class="book-genre-card"><div class="genre-info"><h6>The Great Gatsby</h6><p>F. Scott Fitzgerald</p><span class="badge bg-success">Available</span></div></div>
+      <div class="book-genre-card"><div class="genre-info"><h6>Pride and Prejudice</h6><p>Jane Austen</p><span class="badge bg-danger">Unavailable</span></div></div>
+      <div class="book-genre-card"><div class="genre-info"><h6>The Catcher in the Rye</h6><p>J.D. Salinger</p><span class="badge bg-success">Available</span></div></div>
+    </div>
+
+    <h2 class="section-title text-gradient">📘 Non-Fiction</h2>
+    <div class="scrolling-wrapper-auto mb-4">
+      <div class="book-genre-card"><div class="genre-info"><h6>Educated</h6><p>Tara Westover</p><span class="badge bg-success">Available</span></div></div>
+      <div class="book-genre-card"><div class="genre-info"><h6>Becoming</h6><p>Michelle Obama</p><span class="badge bg-danger">Unavailable</span></div></div>
+      <div class="book-genre-card"><div class="genre-info"><h6>The Wright Brothers</h6><p>David McCullough</p><span class="badge bg-success">Available</span></div></div>
+      <div class="book-genre-card"><div class="genre-info"><h6>Into the Wild</h6><p>Jon Krakauer</p><span class="badge bg-danger">Unavailable</span></div></div>
+    </div>
+
+    <h2 class="section-title text-gradient">👩‍🔬 Science</h2>
+    <div class="scrolling-wrapper-auto mb-4">
+      <div class="book-genre-card"><div class="genre-info"><h6>A Brief History of Time</h6><p>Stephen Hawking</p><span class="badge bg-success">Available</span></div></div>
+      <div class="book-genre-card"><div class="genre-info"><h6>The Gene</h6><p>Siddhartha Mukherjee</p><span class="badge bg-success">Available</span></div></div>
+      <div class="book-genre-card"><div class="genre-info"><h6>Cosmos</h6><p>Carl Sagan</p><span class="badge bg-danger">Unavailable</span></div></div>
+    </div>
+
+    <h2 class="section-title text-gradient">🎓 Education</h2>
+    <div class="scrolling-wrapper-auto mb-4">
+      <div class="book-genre-card"><div class="genre-info"><h6>The Alchemist</h6><p>Paulo Coelho</p><span class="badge bg-success">Available</span></div></div>
+      <div class="book-genre-card"><div class="genre-info"><h6>Atomic Habits</h6><p>James Clear</p><span class="badge bg-danger">Unavailable</span></div></div>
+    </div>
+
+    <h2 class="section-title text-gradient">💼 Business</h2>
+    <div class="scrolling-wrapper-auto mb-4">
+      <div class="book-genre-card"><div class="genre-info"><h6>Rich Dad Poor Dad</h6><p>Robert T. Kiyosaki</p><span class="badge bg-success">Available</span></div></div>
+      <div class="book-genre-card"><div class="genre-info"><h6>The Psychology of Money</h6><p>Morgan Housel</p><span class="badge bg-danger">Unavailable</span></div></div>
+    </div>
+  </section>
+
+  <!-- Script -->
+  <script src="app.js"></script>
+</body>
+</html>
