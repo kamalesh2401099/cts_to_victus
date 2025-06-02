@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Library Management System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+ 
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+<link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    rel="stylesheet"
+  />
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-gradient sticky-top shadow-lg">
+<div class="container-fluid px-4">
+<a class="navbar-brand fw-bold fs-4" href="#home">
+<i class="fas fa-book-reader me-2"></i>Library
+</a>
+<div class="mx-auto w-50">
+<input
+          class="form-control rounded-pill"
+          id="searchBar"
+          type="search"
+          placeholder="Search for books..."
+          aria-label="Search"
+        />
+</div>
+<ul class="navbar-nav ms-auto d-flex align-items-center gap-3">
+<li class="nav-item">
+<a class="nav-link active fw-semibold" href="#home">Home</a>
+</li>
+<li class="nav-item">
+<a class="nav-link fw-semibold" href="borrow.html">Borrow</a>
+</li>
+<li class="nav-item">
+<a class="nav-link fw-semibold" href="return.html">Return</a>
+</li>
+<li class="nav-item">
+<a class="nav-link fw-semibold" href="payment.html">Payment</a>
+</li>
+<li class="nav-item">
+<a class="nav-link fw-semibold" href="membership.html">Membership</a>
+</li>
+<li class="nav-item">
+<a class="nav-link fw-semibold" href="notification.html">
+<i class="fas fa-bell fs-5"></i>
+</a>
+</li>
+<li class="nav-item">
+<a class="nav-link fw-semibold" href="userProfile.html">
+<i class="fas fa-user-circle fs-5"></i>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+ 
+  <section class="container mt-4" id="home">
+<h2 class="section-title text-gradient">✨ All Books</h2>
+<div class="scrolling-wrapper-auto" id="newArrivalsContainer">
+</div>
+</section>
+ 
+  <script src="app.js"></script>
+  <script>
+      document.addEventListener('DOMContentLoaded', () => {
+          const notificationsModal = document.getElementById('notificationsModal');
+          const notificationsModalBody = document.getElementById('notificationsModalBody');
+          const loadingNotifications = document.getElementById('loadingNotifications');
+          const noNotificationsDiv = document.getElementById('noNotifications');
+
+          notificationsModal.addEventListener('show.bs.modal', async () => {
+              // Clear previous content
+              notificationsModalBody.innerHTML = '';
+              loadingNotifications.classList.remove('d-none');
+              noNotificationsDiv.classList.add('d-none');
+
+              // Simulate a user ID (in a real app, this would come from session/auth)
+              const memberId = "M001"; // Example User ID
+
+              try {
+                  // Fetch notifications from backend
+                  const response = await fetch(`http://localhost:8080/api/notifications/member/${memberId}`);
+                  if (!response.ok) {
+                      throw new Error(`HTTP error! status: ${response.status}`);
+                  }
+                  const notifications = await response.json();
+
+                  loadingNotifications.classList.add('d-none');
+
+                  if (notifications.length === 0) {
+                      noNotificationsDiv.classList.remove('d-none');
+                      notificationsModalBody.appendChild(noNotificationsDiv); // Add it back if it was removed
+                  } else {
+                      notifications.forEach(notification => {
+                          const notificationCard = document.createElement('div');
+                          notificationCard.classList.add('notification-card', 'mb-3', 'p-3', 'rounded');
+
+                          let iconHtml = '';
+                          let borderClass = 'border-start'; // Default
+                          let textColorClass = 'text-muted'; // Default
+
+                          if (notification.message.toLowerCase().includes('overdue')) {
+                              iconHtml = '<i class="fas fa-exclamation-triangle text-danger notification-icon me-2"></i>';
+                              borderClass = 'border-danger';
+                              textColorClass = 'text-danger';
+                          } else if (notification.message.toLowerCase().includes('fine') || notification.message.toLowerCase().includes('dues')) {
+                              iconHtml = '<i class="fas fa-rupee-sign text-warning notification-icon me-2"></i>';
+                              borderClass = 'border-warning';
+                              textColorClass = 'text-warning';
+                          } else if (notification.message.toLowerCase().includes('due date')) {
+                              iconHtml = '<i class="fas fa-calendar-alt text-info notification-icon me-2"></i>';
+                              borderClass = 'border-info';
+                              textColorClass = 'text-info';
+                          } else {
+                              iconHtml = '<i class="fas fa-info-circle text-primary notification-icon me-2"></i>';
+                              borderClass = 'border-primary';
+                              textColorClass = 'text-primary';
+                          }
+
+                          notificationCard.classList.add(borderClass);
+
+                          notificationCard.innerHTML = `
+                              <div class="d-flex align-items-center mb-1">
+                                  ${iconHtml}
+                                  <span class="notification-title fw-bold ${textColorClass}">${notification.title || 'Notification'}</span>
+                              </div>
+                              <p class="notification-desc mb-0">${notification.message}</p>
+                          `;
+
+                          // Add redirect logic for fine payment
+                          if (notification.message.toLowerCase().includes('fine') && notification.fineId && notification.amount) {
+                              const payLink = document.createElement('a');
+                              payLink.href = `payment.html?fineId=${notification.fineId}&userId=${notification.memberId}&amount=${notification.amount}&paymentType=fine`;
+                              payLink.classList.add('btn', 'btn-sm', 'btn-outline-primary', 'mt-2');
+                              payLink.textContent = 'Pay Now';
+                              notificationCard.appendChild(payLink);
+                          }
+
+                          notificationsModalBody.appendChild(notificationCard);
+                      });
+                  }
+              } catch (error) {
+                  console.error('Failed to fetch notifications:', error);
+                  loadingNotifications.classList.add('d-none');
+                  notificationsModalBody.innerHTML = `<div class="alert alert-danger text-center" role="alert">
+                                                          Failed to load notifications. Please try again later.
+                                                      </div>`;
+              }
+          });
+      });
+  </script>
+  </body>
+  </html>
+</body>
+</html>

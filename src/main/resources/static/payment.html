@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pay Fines & Membership</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        /* Add this to ensure full height for centering */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-image: url('https://images.unsplash.com/photo-1549673995-bb06424564c7'); /* Books and money theme */
+            background-size: cover;
+            background-position: center;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .overlay {
+            background: rgba(0, 0, 0, 0.7);
+            min-height: 100vh;
+            display: flex;
+            align-items: center; /* Vertically centers the content */
+            justify-content: center; /* Horizontally centers the content */
+            padding: 20px;
+        }
+
+        .payment-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #007bff; /* Primary blue for headings */
+        }
+
+        .form-section {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            background-color: #f9f9f9;
+        }
+
+        .form-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #555;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            width: 100%;
+            padding: 10px;
+            font-size: 1.1rem;
+            margin-top: 15px;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .alert-info, .alert-danger {
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .fine-details, .membership-info {
+            background-color: #e2f0ff; /* Light blue background for details */
+            border: 1px solid #b3d9ff;
+            border-left: 5px solid #007bff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none; /* Hidden by default */
+        }
+
+        .fine-details strong, .membership-info strong {
+            color: #0056b3;
+        }
+
+        .no-dues {
+            background-color: #d4edda; /* Light green for no dues */
+            border-color: #c3e6cb;
+            border-left-color: #28a745;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            border-left-color: #dc3545;
+        }
+
+        .payment-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .payment-message.success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .payment-message.error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .membership-select-container {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between select and button */
+        }
+
+        .membership-select-container select {
+            flex-grow: 1;
+        }
+
+        .form-check-label {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay">
+        <div class="payment-container">
+            <h2><i class="fas fa-wallet me-2"></i>Pay Fines & Membership Fees</h2>
+
+            <div id="paymentSuccessAlert" class="payment-message d-none success">
+                </div>
+            <div id="paymentErrorAlert" class="payment-message d-none error">
+                </div>
+
+            <div class="form-section mb-4">
+                <h3>Pay Specific Fine</h3>
+                <div class="mb-3">
+                    <label for="fineUserId" class="form-label"><i class="fas fa-user-circle me-2"></i>Your User ID</label>
+                    <input type="text" class="form-control" id="fineUserId" placeholder="Enter your User ID" required>
+                </div>
+                <div class="mb-3">
+                    <label for="fineId" class="form-label"><i class="fas fa-barcode me-2"></i>Fine ID</label>
+                    <input type="text" class="form-control" id="fineId" placeholder="Enter Fine ID (e.g., F001)" required>
+                </div>
+                <button type="button" class="btn btn-primary" id="getFineDetailsBtn">Get Fine Details</button>
+
+                <div id="fineDetailsDiv" class="fine-details">
+                    <p>Fine ID: <strong><span id="displayFineId"></span></strong></p>
+                    <p>User ID: <strong><span id="displayFineUserId"></span></strong></p>
+                    <p>Amount Due: ₹<strong><span id="fineAmount">0.00</span></strong></p>
+                    <button type="button" class="btn btn-primary" id="payFineBtn">Pay Fine Now</button>
+                </div>
+            </div>
+
+            <div class="form-section mb-4">
+                <h3>Pay All Outstanding Fines</h3>
+                <div class="mb-3">
+                    <label for="allFinesUserId" class="form-label"><i class="fas fa-users me-2"></i>Your User ID</label>
+                    <input type="text" class="form-control" id="allFinesUserId" placeholder="Enter your User ID" required>
+                </div>
+                <button type="button" class="btn btn-primary" id="getAllFinesBtn">Get All Fine Details</button>
+
+                <div id="allFinesDetailsDiv" class="fine-details">
+                    <p>User ID: <strong><span id="displayAllFinesUserId"></span></strong></p>
+                    <p>Total Outstanding Fines: ₹<strong><span id="totalFineAmount">0.00</span></strong></p>
+                    <p>Number of Fines: <strong><span id="numberOfFines">0</span></strong></p>
+                    <button type="button" class="btn btn-primary" id="payAllFinesBtn">Pay All Fines Now</button>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Pay Membership Fee</h3>
+                <div class="mb-3">
+                    <label for="membershipUserId" class="form-label"><i class="fas fa-address-card me-2"></i>Your User ID</label>
+                    <input type="text" class="form-control" id="membershipUserId" placeholder="Enter your User ID" required>
+                </div>
+                <div class="mb-3">
+                    <label for="membershipType" class="form-label"><i class="fas fa-gem me-2"></i>Select Membership Plan</label>
+                    <div class="membership-select-container">
+                        <select class="form-select" id="membershipType" required>
+                            <option value="">Select Plan</option>
+                            <option value="basic">Basic (₹100.00/year)</option>
+                            <option value="premium">Premium (₹250.00/year)</option>
+                            <option value="gold">Gold (₹500.00/year)</option>
+                        </select>
+                        <button type="button" class="btn btn-primary" id="getMembershipFeeBtn" style="width: auto;">Get Fee</button>
+                    </div>
+                </div>
+
+                <div id="membershipFeeDetailsDiv" class="membership-info">
+                    <p>User ID: <strong><span id="displayMembershipUserId"></span></strong></p>
+                    <p>Selected Plan: <strong><span id="selectedMembershipPlan"></span></strong></p>
+                    <p>Membership Fee: ₹<strong><span id="membershipFeeAmount">0.00</span></strong></p>
+                    <button type="button" class="btn btn-primary" id="payMembershipBtn">Pay Membership Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const getFineDetailsBtn = document.getElementById('getFineDetailsBtn');
+            const fineUserIdInput = document.getElementById('fineUserId');
+            const fineIdInput = document.getElementById('fineId');
+            const fineDetailsDiv = document.getElementById('fineDetailsDiv');
+            const displayFineIdSpan = document.getElementById('displayFineId');
+            const displayFineUserIdSpan = document.getElementById('displayFineUserId');
+            const fineAmountSpan = document.getElementById('fineAmount');
+            const payFineBtn = document.getElementById('payFineBtn');
+
+            const getAllFinesBtn = document.getElementById('getAllFinesBtn');
+            const allFinesUserIdInput = document.getElementById('allFinesUserId');
+            const allFinesDetailsDiv = document.getElementById('allFinesDetailsDiv');
+            const displayAllFinesUserIdSpan = document.getElementById('displayAllFinesUserId');
+            const totalFineAmountSpan = document.getElementById('totalFineAmount');
+            const numberOfFinesSpan = document.getElementById('numberOfFines');
+            const payAllFinesBtn = document.getElementById('payAllFinesBtn');
+
+            const getMembershipFeeBtn = document.getElementById('getMembershipFeeBtn');
+            const membershipUserIdInput = document.getElementById('membershipUserId');
+            const membershipTypeSelect = document.getElementById('membershipType');
+            const membershipFeeDetailsDiv = document.getElementById('membershipFeeDetailsDiv');
+            const displayMembershipUserIdSpan = document.getElementById('displayMembershipUserId');
+            const selectedMembershipPlanSpan = document.getElementById('selectedMembershipPlan');
+            const membershipFeeAmountSpan = document.getElementById('membershipFeeAmount');
+            const payMembershipBtn = document.getElementById('payMembershipBtn');
+
+            const paymentSuccessAlert = document.getElementById('paymentSuccessAlert');
+            const paymentErrorAlert = document.getElementById('paymentErrorAlert');
+
+            // Simulated backend data for fines and membership costs
+            const mockFines = {
+                "M001": {
+                    "F001": 15.00,
+                    "F002": 20.00
+                },
+                "M002": {
+                    "F003": 10.00
+                }
+            };
+            const membershipCosts = {
+                "basic": 100.00,
+                "premium": 250.00,
+                "gold": 500.00
+            };
+
+            let currentFineAmount = 0;
+            let currentTotalFineAmount = 0;
+            let currentNumberOfFines = 0;
+            let currentMembershipFee = 0;
+
+            // Handle URL parameters for payment status messages
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            const message = urlParams.get('message');
+            const paidAmount = urlParams.get('amount');
+            const paidFineId = urlParams.get('fineId');
+            const paidUserId = urlParams.get('userId');
+
+            if (status === 'success') {
+                paymentSuccessAlert.classList.remove('d-none');
+                paymentSuccessAlert.innerHTML = `✅ Payment Successful! ${message || ''} You paid ₹<strong>${parseFloat(paidAmount || 0).toFixed(2)}</strong> for User ID: <strong>${paidUserId || 'N/A'}</strong>.`;
+                if (paidFineId) {
+                    paymentSuccessAlert.innerHTML += ` Fine ID: <strong>${paidFineId}</strong>.`;
+                }
+            } else if (status === 'error') {
+                paymentErrorAlert.classList.remove('d-none');
+                paymentErrorAlert.innerHTML = `❌ Payment Failed! ${message || 'An error occurred.'}`;
+            }
+
+            // Clear URL parameters after displaying message to prevent re-display on refresh
+            if (status) {
+                const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.history.replaceState({ path: newUrl }, '', newUrl);
+            }
+
+            // Function to process payment by redirecting to a simulated Razorpay page
+            function redirectToRazorpay(amount, userId, paymentType, fineId = null, plan = null) {
+                let url = `razorpay_checkout.html?amount=${amount.toFixed(2)}&userId=${userId}&paymentType=${paymentType}`;
+                if (fineId) {
+                    url += `&fineId=${fineId}`;
+                }
+                if (plan) {
+                    url += `&plan=${plan}`;
+                }
+                window.location.href = url;
+            }
+
+            // --- Fine Payment Logic ---
+            getFineDetailsBtn.addEventListener('click', () => {
+                const userId = fineUserIdInput.value.trim().toUpperCase();
+                const fineId = fineIdInput.value.trim().toUpperCase();
+                paymentSuccessAlert.classList.add('d-none');
+                paymentErrorAlert.classList.add('d-none');
+
+                if (!userId || !fineId) {
+                    alert("Please enter both User ID and Fine ID.");
+                    fineDetailsDiv.classList.add('d-none');
+                    return;
+                }
+
+                if (mockFines[userId] && mockFines[userId][fineId]) {
+                    currentFineAmount = mockFines[userId][fineId];
+                    displayFineIdSpan.textContent = fineId;
+                    displayFineUserIdSpan.textContent = userId;
+                    fineAmountSpan.textContent = currentFineAmount.toFixed(2);
+                    fineDetailsDiv.classList.remove('d-none', 'no-dues', 'alert-danger');
+                    fineDetailsDiv.classList.add('fine-details'); // Re-apply base style
+                } else {
+                    fineDetailsDiv.classList.remove('d-none');
+                    fineDetailsDiv.classList.remove('fine-details');
+                    fineDetailsDiv.classList.add('no-dues'); // Style for no dues
+                    fineDetailsDiv.innerHTML = `<p>No outstanding fine found for User ID <strong>${userId}</strong> with Fine ID <strong>${fineId}</strong>, or fine already paid.</p>`;
+                    payFineBtn.classList.add('d-none'); // Hide pay button if no dues
+                }
+            });
+
+            payFineBtn.addEventListener('click', () => {
+                const userId = fineUserIdInput.value.trim().toUpperCase();
+                const fineId = fineIdInput.value.trim().toUpperCase();
+                if (currentFineAmount > 0) {
+                    redirectToRazorpay(currentFineAmount, userId, 'fine', fineId);
+                } else {
+                    alert("No valid fine amount to pay.");
+                }
+            });
+
+            // --- All Fines Payment Logic ---
+            getAllFinesBtn.addEventListener('click', () => {
+                const userId = allFinesUserIdInput.value.trim().toUpperCase();
+                paymentSuccessAlert.classList.add('d-none');
+                paymentErrorAlert.classList.add('d-none');
+                currentTotalFineAmount = 0;
+                currentNumberOfFines = 0;
+
+                if (!userId) {
+                    alert("Please enter User ID.");
+                    allFinesDetailsDiv.classList.add('d-none');
+                    return;
+                }
+
+                if (mockFines[userId]) {
+                    const userFines = mockFines[userId];
+                    for (const fineId in userFines) {
+                        currentTotalFineAmount += userFines[fineId];
+                        currentNumberOfFines++;
+                    }
+
+                    if (currentTotalFineAmount > 0) {
+                        displayAllFinesUserIdSpan.textContent = userId;
+                        totalFineAmountSpan.textContent = currentTotalFineAmount.toFixed(2);
+                        numberOfFinesSpan.textContent = currentNumberOfFines;
+                        allFinesDetailsDiv.classList.remove('d-none', 'no-dues', 'alert-danger');
+                        allFinesDetailsDiv.classList.add('fine-details'); // Re-apply base style
+                        payAllFinesBtn.classList.remove('d-none'); // Ensure button is visible
+                    } else {
+                        allFinesDetailsDiv.classList.remove('d-none');
+                        allFinesDetailsDiv.classList.remove('fine-details');
+                        allFinesDetailsDiv.classList.add('no-dues'); // Style for no dues
+                        allFinesDetailsDiv.innerHTML = `<p>No outstanding fines for User ID <strong>${userId}</strong>.</p>`;
+                        payAllFinesBtn.classList.add('d-none'); // Hide pay button if no dues
+                    }
+                } else {
+                    allFinesDetailsDiv.classList.remove('d-none');
+                    allFinesDetailsDiv.classList.remove('fine-details');
+                    allFinesDetailsDiv.classList.add('no-dues'); // Style for no dues
+                    allFinesDetailsDiv.innerHTML = `<p>No fines found for User ID <strong>${userId}</strong>.</p>`;
+                    payAllFinesBtn.classList.add('d-none'); // Hide pay button if no dues
+                }
+            });
+
+            payAllFinesBtn.addEventListener('click', () => {
+                const userId = allFinesUserIdInput.value.trim().toUpperCase();
+                if (currentTotalFineAmount > 0) {
+                    redirectToRazorpay(currentTotalFineAmount, userId, 'fine_all');
+                } else {
+                    alert("No total fine amount to pay.");
+                }
+            });
+
+
+            // --- Membership Payment Logic ---
+            getMembershipFeeBtn.addEventListener('click', () => {
+                const userId = membershipUserIdInput.value.trim().toUpperCase();
+                const membershipType = membershipTypeSelect.value;
+                const selectedPlanText = membershipTypeSelect.options[membershipTypeSelect.selectedIndex].text;
+
+                paymentSuccessAlert.classList.add('d-none');
+                paymentErrorAlert.classList.add('d-none');
+                membershipFeeDetailsDiv.classList.remove('no-dues', 'alert-danger');
+                membershipFeeDetailsDiv.classList.add('membership-info'); // Apply membership styling
+
+                if (!userId || !membershipType) {
+                    membershipFeeDetailsDiv.classList.add('d-none');
+                    alert("Please enter User ID and select a Membership Type.");
+                    return;
+                }
+
+                currentMembershipFee = membershipCosts[membershipType];
+
+                if (currentMembershipFee > 0) {
+                    // Display details
+                    membershipFeeDetailsDiv.classList.remove('d-none');
+                    displayMembershipUserIdSpan.textContent = userId;
+                    selectedMembershipPlanSpan.textContent = selectedPlanText;
+                    membershipFeeAmountSpan.textContent = currentMembershipFee.toFixed(2);
+                    
+                    // Show pay button
+                    payMembershipBtn.classList.remove('d-none');
+                } else {
+                    membershipFeeDetailsDiv.classList.add('d-none');
+                    alert("Please select a valid membership type.");
+                    payMembershipBtn.classList.add('d-none');
+                }
+            });
+
+            payMembershipBtn.addEventListener('click', () => {
+                const userId = membershipUserIdInput.value.trim().toUpperCase();
+                const membershipType = membershipTypeSelect.value;
+                if (currentMembershipFee > 0 && membershipType) {
+                    redirectToRazorpay(currentMembershipFee, userId, 'membership', null, membershipType);
+                } else {
+                    alert("No valid membership fee to pay or plan selected.");
+                }
+            });
+
+            // Initialize display states
+            fineDetailsDiv.classList.add('d-none');
+            allFinesDetailsDiv.classList.add('d-none');
+            membershipFeeDetailsDiv.classList.add('d-none');
+        });
+    </script>
+</body>
+</html>
