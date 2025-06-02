@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Borrow a Book</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  
+  <style>
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f') no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+      color: #fff;
+    }
+
+    .overlay {
+      background: rgba(0, 0, 0, 0.65);
+      min-height: 100vh;
+      padding-top: 70px;
+    }
+
+    .navbar {
+      background-color: #1f1f1f !important;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .navbar-brand, .nav-link {
+      color: #e0e0e0 !important;
+      font-weight: 600;
+    }
+
+    .navbar-brand:hover, .nav-link:hover {
+      color: #1e90ff !important;
+    }
+
+    .form-container {
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 600px;
+      margin: 20px auto;
+      box-shadow: 0 0 25px rgba(0,0,0,0.4);
+      color: #333; /* Darker text for readability on light background */
+    }
+
+    h2 {
+      text-align: center;
+      font-weight: bold;
+      color: #1e90ff; /* A strong blue for titles */
+      margin-bottom: 30px;
+    }
+
+    .btn-primary {
+      background-color: #1e90ff;
+      border-color: #1e90ff;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: #007bff;
+      border-color: #007bff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(30, 144, 255, 0.4);
+    }
+
+    .form-control {
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .form-control:focus {
+      border-color: #1e90ff;
+      box-shadow: 0 0 0 0.25rem rgba(30, 144, 255, 0.25);
+    }
+    .alert {
+        border-radius: 8px;
+        font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">Library</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="borrow.html">Borrow Book</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="return.html">Return Book</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="userProfile.html">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="userLogin.html">Login/Register</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <section class="container">
+      <div class="form-container">
+        <h2>Borrow a Book</h2>
+        <form id="borrowForm">
+          <div class="mb-3">
+            <label for="memberId" class="form-label">Your Member ID</label>
+            <input type="number" class="form-control" id="memberId" placeholder="Enter your 5-digit Member ID" required minlength="1" maxlength="5">
+          </div>
+          <div class="mb-3">
+            <label for="bookSelect" class="form-label">Select Book to Borrow</label>
+            <select class="form-select" id="bookSelect" required>
+              <option value="">Loading books...</option>
+            </select>
+          </div>
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary">Borrow</button>
+          </div>
+        </form>
+
+        <div class="alert alert-success mt-3 d-none" id="borrowSuccess" role="alert">
+          ✅ You have successfully borrowed the book!
+        </div>
+        <div class="alert alert-danger mt-3 d-none" id="borrowError" role="alert">
+          ❌ Failed to borrow book.
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const bookSelect = document.getElementById('bookSelect');
+        const borrowForm = document.getElementById('borrowForm');
+        const borrowSuccessAlert = document.getElementById('borrowSuccess');
+        const borrowErrorAlert = document.getElementById('borrowError');
+
+        // Function to fetch and display available books
+        const fetchAvailableBooks = async () => {
+            try {
+                const response = await fetch('http://localhost:8080/api/books');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const books = await response.json();
+                
+                bookSelect.innerHTML = '<option value="">-- Select a Book --</option>'; // Clear previous options
+                let hasAvailableBooks = false;
+
+                books.forEach(book => {
+                    // Only add books with available copies
+                    if (book.availableCopies > 0) {
+                        const option = document.createElement('option');
+                        option.value = book.bookId; // Use bookId as the value
+                        option.textContent = `${book.title} by ${book.author} (Available: ${book.availableCopies})`;
+                        bookSelect.appendChild(option);
+                        hasAvailableBooks = true;
+                    }
+                });
+
+                if (!hasAvailableBooks) {
+                    bookSelect.innerHTML = '<option value="">No books currently available for borrowing.</option>';
+                    bookSelect.disabled = true; // Disable if no books are available
+                } else {
+                    bookSelect.disabled = false;
+                }
+
+            } catch (error) {
+                console.error('Error fetching books:', error);
+                bookSelect.innerHTML = '<option value="">Error loading books.</option>';
+                bookSelect.disabled = true;
+            }
+        };
+
+        // Fetch books when the page loads
+        fetchAvailableBooks();
+
+        // Handle borrow form submission
+        borrowForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            borrowSuccessAlert.classList.add('d-none');
+            borrowErrorAlert.classList.add('d-none');
+
+            const memberId = document.getElementById('memberId').value;
+            const bookId = bookSelect.value; // Get the selected bookId
+
+            if (!memberId || !bookId) {
+                borrowErrorAlert.textContent = 'Please enter your Member ID and select a book.';
+                borrowErrorAlert.classList.remove('d-none');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8080/api/borrowings/borrow', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ bookId: parseInt(bookId), memberId: parseInt(memberId) }),
+                });
+
+                if (response.ok) {
+                    const transaction = await response.json();
+                    borrowSuccessAlert.innerHTML = `✅ You have successfully borrowed "<strong>${transaction.book.title}</strong>"! Transaction ID: <strong>${transaction.transactionId}</strong>. Please return by: <strong>${transaction.dueDate}</strong>.`;
+                    borrowSuccessAlert.classList.remove('d-none');
+                    borrowForm.reset();
+                    fetchAvailableBooks(); // Refresh book list to reflect new availability
+                } else {
+                    const errorText = await response.text();
+                    borrowErrorAlert.textContent = `❌ Failed to borrow book: ${errorText || 'Unknown error.'}`;
+                    borrowErrorAlert.classList.remove('d-none');
+                }
+            } catch (error) {
+                console.error('Error during borrowing:', error);
+                borrowErrorAlert.textContent = '❌ An error occurred while trying to borrow the book. Please try again.';
+                borrowErrorAlert.classList.remove('d-none');
+            }
+        });
+    });
+  </script>
+</body>
+</html>

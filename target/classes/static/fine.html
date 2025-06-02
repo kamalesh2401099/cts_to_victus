@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fine Transactions</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+         body {
+    background-image: url("overdue.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100vh;
+}
+
+         .table {
+     background: white;
+     border-radius: 10px;
+     overflow: hidden;
+   }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4 text-center text-white"><span class="badge bg-dark float-end">Fine Transactions</span></h2>
+        <table class="table table-bordered table-hover shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>FineID</th>
+                    <th>MemberID</th>
+                    <th>Amount</th>
+                    <th>Transaction Date</th>
+                    <th>Status</th>
+                    
+                </tr>
+            </thead>
+            <tbody id="fineTableBody">
+                <!-- Sample rows -->
+                
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            const fines = [
+                { FineID: 1, MemberID: 1, Amount: '$10.00', TransactionDate: '2025-04-01', Status: 'Paid' },
+                { FineID: 2, MemberID: 2, Amount: '$5.00', Status: 'Pending' },
+                { FineID: 3, MemberID: 3, Amount: '$7.50', TransactionDate: '2025-04-10',Status: 'Paid' }
+            ];
+
+            fines.forEach(fine => {
+                const row = `<tr>
+                                <td>${fine.FineID}</td>
+                                <td>${fine.MemberID}</td>
+                                <td>${fine.Amount}</td>
+                                <td>${fine.TransactionDate}</td>
+                                <td>${fine.Status}</td>
+                                
+                            </tr>`;
+                $('#fineTableBody').append(row);
+            });
+        });
+    </script>
+</body>
+</html>

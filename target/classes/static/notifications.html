@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url("notification.png");
+            background-size: cover;
+            background-repeat: no-repeat;
+             background-position: center;
+         }
+         .table {
+     background: white;
+     border-radius: 10px;
+     overflow: hidden;
+   }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4 text-center"><span class="badge bg-light float-end">Notifications</span></h2>
+         <table class="table table-bordered table-hover shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>NotificationID</th>
+                    <th>MemberID</th>
+                    <th>Message</th>
+                    <th>DateSent</th>
+                </tr>
+            </thead>
+            <tbody id="notificationTableBody">
+                <!-- Sample rows -->
+               
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            const notifications = [
+                { NotificationID: 1, MemberID: 1, Message: 'Your book is due soon.', DateSent: '2025-04-01' },
+                { NotificationID: 2, MemberID: 2, Message: 'You have an overdue book.', DateSent: '2025-04-05' },
+                { NotificationID: 3, MemberID: 3, Message: 'New books have arrived!', DateSent: '2025-04-10' },
+                { NotificationID: 4, MemberID: 4, Message: 'Your membership is about to expire.', DateSent: '2025-04-12' }
+            ];
+
+            notifications.forEach(notification => {
+                const row = `<tr>
+                                <td>${notification.NotificationID}</td>
+                                <td>${notification.MemberID}</td>
+                                <td>${notification.Message}</td>
+                                <td>${notification.DateSent}</td>
+                            </tr>`;
+                $('#notificationTableBody').append(row);
+            });
+        });
+    </script>
+</body>
+</html>

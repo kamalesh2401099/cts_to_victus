@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borrowing Transactions</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+         body {
+    background-image: url("borrow.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100vh;
+}
+
+         .table {
+     background: white;
+     border-radius: 10px;
+     overflow: hidden;
+   }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4 text-center text-blue"><span class="badge bg-info text-dark float-end" >Borrowing Transactions</span></h2>
+        <table class="table table-bordered table-hover shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>TransactionID</th>
+                    <th>BookID</th>
+                    <th>MemberID</th>
+                    <th>BorrowDate</th>
+                    <th>ReturnDate</th>
+                    <th>Returnstatus</th>
+                               </thead>
+            <tbody id="transactionTableBody">
+                <!-- Rows will be added here dynamically -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            const transactions = [
+                { TransactionID: 1, BookID: 101, MemberID: 1, BorrowDate: '2025-04-01', ReturnDate: '2025-04-15', Status: 'Returned' },
+                { TransactionID: 2, BookID: 102, MemberID: 2, BorrowDate: '2025-04-05', ReturnDate: '2025-04-20', Status: 'Borrowed' },
+                { TransactionID: 3, BookID: 103, MemberID: 3, BorrowDate: '2025-04-10', ReturnDate: '2025-04-25', Status: 'Borrowed' },
+                { TransactionID: 4, BookID: 104, MemberID: 4, BorrowDate: '2025-04-12', ReturnDate: '2025-04-26', Status: 'Returned' }
+            ];
+
+            transactions.forEach(transaction => {
+                const row = `<tr>
+                                <td>${transaction.TransactionID}</td>
+                                <td>${transaction.BookID}</td>
+                                <td>${transaction.MemberID}</td>
+                                <td>${transaction.BorrowDate}</td>
+                                <td>${transaction.ReturnDate}</td>
+                                <td>${transaction.Status}</td>
+                            </tr>`;
+                $('#transactionTableBody').append(row);
+            });
+        });
+    </script>
+</body>
+</html>
