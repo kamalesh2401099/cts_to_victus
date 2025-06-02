@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pay Fines & Membership</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        /* Add this to ensure full height for centering */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-image: url('https://images.unsplash.com/photo-1549673995-bb06424564c7'); /* Books and money theme */
+            background-size: cover;
+            background-position: center;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .overlay {
+            background: rgba(0, 0, 0, 0.7);
+            min-height: 100vh;
+            display: flex;
+            align-items: center; /* Vertically centers the content (the section) */
+            justify-content: center; /* Horizontally centers the content (the section) */
+            padding: 20px; /* Add some overall padding for small screens */
+        }
+        
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.98);
+            padding: 35px;
+            border-radius: 15px;
+            max-width: 900px; /* Increased max-width for two columns */
+            width: 95%; /* Increased width percentage */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            color: #333;
+            animation: fadeIn 1.2s ease-out;
+            /* No flex-direction here, let Bootstrap .row handle it */
+            position: relative; /* Needed for absolute positioning if using for nav later */
+            overflow: hidden; /* Hide overflowing content for sliding effect */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            text-align: center;
+            font-weight: bold;
+            color: #dc3545; /* Red for overdue fines */
+            margin-bottom: 25px;
+        }
+        h2.membership-title { /* New style for membership title */
+            color: #007bff; /* Blue for membership */
+        }
+
+        .navbar {
+            background: linear-gradient(45deg, #141e30, #243b55);
+            box-shadow: 0 2px 10px rgba(30, 144, 255, 0.5);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 0.75rem 1rem;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            color: #1e90ff;
+            font-weight: 700;
+            user-select: none;
+            text-shadow: 0 0 8px #1e90ff;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            color: #00eaff;
+            text-shadow: 0 0 14px #00eaff;
+        }
+
+        .navbar-nav {
+            display: flex;
+            gap: 1.25rem;
+        }
+
+        .nav-link {
+            color: #aad4ff !important;
+            font-weight: 600;
+            font-size: 1.1rem;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #00eaff !important;
+            text-shadow: 0 0 12px #00eaff;
+        }
+
+        .nav-link::after {
+            content: "";
+            position: absolute;
+            width: 0%;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background: #00eaff;
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .btn-check-overdue {
+            background: linear-gradient(135deg, #dc3545, #fd7e14);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            color: white;
+            font-weight: bold;
+        }
+        .btn-check-overdue:hover {
+            background: linear-gradient(135deg, #fd7e14, #dc3545);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+        }
+
+        /* New button style for "Proceed to Pay" for membership */
+        .btn-proceed-pay-membership {
+            background: linear-gradient(135deg, #007bff, #0056b3); /* Blue gradient for membership */
+            border: none;
+            padding: 10px 25px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            color: white;
+            font-weight: bold;
+            display: block;
+            width: fit-content;
+            margin: 15px auto 0 auto;
+        }
+        .btn-proceed-pay-membership:hover {
+            background: linear-gradient(135deg, #0056b3, #007bff);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+        }
+
+        .btn-pay-razorpay { /* Original Razorpay button style for fines */
+            background: linear-gradient(135deg, #5250F4, #663399);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            color: white;
+            font-weight: bold;
+            display: block;
+            width: fit-content;
+            margin: 15px auto 0 auto;
+        }
+        .btn-pay-razorpay:hover {
+            background: linear-gradient(135deg, #663399, #5250F4);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(82, 80, 244, 0.4);
+        }
+
+
+        .fine-details { /* Used for both fines and membership details */
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #f8d7da; /* Light red for fines */
+            color: #721c24;
+            border: 1px solid #dc3545;
+            box-shadow: inset 0 0 8px rgba(220, 53, 69, 0.2);
+            min-height: 150px; /* Ensure consistent height for alignment */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .fine-details.no-dues {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #28a745;
+            box-shadow: inset 0 0 8px rgba(40, 167, 69, 0.2);
+        }
+        .fine-details.membership-info { /* Specific style for membership info */
+            background-color: #e6f2ff; /* Light blue */
+            color: #004085;
+            border-color: #007bff;
+            box-shadow: inset 0 0 8px rgba(0, 123, 255, 0.2);
+        }
+        .fine-details.membership-info h5,
+        .fine-details.membership-info .total-fine {
+            color: #007bff;
+        }
+
+
+        .fine-details h5 {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .fine-details.no-dues h5 {
+            color: #28a745;
+        }
+        .fine-details ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .fine-details li {
+            margin-bottom: 5px;
+        }
+        .fine-details li strong {
+            color: #a7243b;
+        }
+        .fine-details.no-dues li strong {
+            color: #155724;
+        }
+        .total-fine {
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-align: right;
+            margin-top: 15px;
+            color: #dc3545;
+        }
+        .total-fine.no-dues {
+            color: #28a745;
+        }
+
+        #paymentSuccess {
+            animation: fadeInSuccess 0.6s ease-in-out;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        @keyframes fadeInSuccess {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        /* Adjust the section to account for the fixed navbar and ensure centering */
+        section.container {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 100px; /* Add top padding to move content below fixed navbar */
+            padding-bottom: 3rem;
+            width: 100%;
+        }
+
+        /* --- Sliding Panels Styles --- */
+        .slide-nav-buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+            gap: 15px; /* Space between buttons */
+        }
+
+        .slide-nav-buttons .btn {
+            flex: 1; /* Make buttons take equal space */
+            max-width: 200px; /* Limit button width */
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: 2px solid transparent; /* Default border */
+        }
+
+        .slide-nav-buttons .btn-fine {
+            background-color: #dc3545; /* Red for Fines */
+            color: white;
+        }
+        .slide-nav-buttons .btn-fine.active,
+        .slide-nav-buttons .btn-fine:hover {
+            background-color: #c82333;
+            border-color: #a7243b;
+            box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
+        }
+
+        .slide-nav-buttons .btn-membership {
+            background-color: #007bff; /* Blue for Membership */
+            color: white;
+        }
+        .slide-nav-buttons .btn-membership.active,
+        .slide-nav-buttons .btn-membership:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+
+        .slides-container {
+            overflow: hidden; /* Crucial to hide content outside current view */
+            width: 100%;
+        }
+
+        .slides-wrapper {
+            display: flex;
+            width: 200%; /* Two panels, each 100% width of slides-container */
+            transition: transform 0.5s ease-in-out; /* Smooth sliding animation */
+        }
+
+        .slide-panel {
+            width: 50%; /* Each panel takes half of the slides-wrapper width */
+            flex-shrink: 0; /* Prevent panels from shrinking */
+            padding: 0 15px; /* Add internal padding to mimic column spacing */
+            box-sizing: border-box; /* Include padding in width */
+        }
+        /* End Sliding Panels Styles */
+
+
+        /* Responsive adjustments */
+        @media (min-width: 768px) { /* On medium devices and larger */
+            /* Removed custom column spacing. Sliding panels will handle their own spacing. */
+        }
+
+        @media (max-width: 767.98px) { /* On small devices, ensure vertical stacking and spacing */
+            .form-container {
+                padding: 25px;
+            }
+            h2 {
+                font-size: 1.75rem;
+            }
+            .navbar-brand {
+                font-size: 1.4rem;
+            }
+            .nav-link {
+                font-size: 1rem;
+            }
+            .btn-check-overdue, .btn-pay-razorpay, .btn-proceed-pay-membership {
+                padding: 8px 20px;
+                font-size: 0.9rem;
+            }
+            section.container {
+                padding-top: 80px;
+            }
+            /* Adjust padding for slide panels on small screens if needed */
+            .slide-panel {
+                padding: 0 5px; /* Less padding on small screens */
+            }
+            .slide-nav-buttons {
+                flex-direction: column; /* Stack buttons vertically on small screens */
+                gap: 10px;
+            }
+            .slide-nav-buttons .btn {
+                max-width: 100%; /* Full width buttons */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay">
+
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="index.html">📖 Library</a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">Home</a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="payment.html">Pay Fines</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <section class="container py-5">
+            <div class="form-container">
+                <div class="slide-nav-buttons">
+                    <button id="showFinesBtn" class="btn btn-fine active">Pay Overdue Fines</button>
+                    <button id="showMembershipBtn" class="btn btn-membership">Pay Membership Fee</button>
+                </div>
+
+                <div class="slides-container">
+                    <div class="slides-wrapper">
+                        <div class="slide-panel" id="finesPanel">
+                            <h2>💸 Pay Overdue Fines</h2>
+                            <form id="fineCheckForm">
+                                <div class="mb-3">
+                                    <label for="fineUserId" class="form-label">User ID:</label>
+                                    <input type="text" class="form-control" id="fineUserId" placeholder="Enter your User ID" required>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" id="checkOverdueBtn" class="btn btn-check-overdue">Check Overdue & Fines</button>
+                                </div>
+                            </form>
+
+                            <div id="fineDetails" class="fine-details mt-4 d-none">
+                                <h5 class="mb-3">Overdue Books:</h5>
+                                <ul id="overdueBooksList">
+                                    </ul>
+                                <div class="total-fine">Total Fine: ₹<span id="totalFineAmount">0.00</span></div>
+                                <div class="text-center mt-3">
+                                    <button type="button" id="payRazorpayBtn" class="btn btn-pay-razorpay d-none">Pay Now with Razorpay</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="slide-panel" id="membershipPanel">
+                            <h2 class="membership-title">💳 Pay Membership Fee</h2>
+                            <form id="membershipPaymentForm">
+                                <div class="mb-3">
+                                    <label for="membershipUserId" class="form-label">User ID:</label>
+                                    <input type="text" class="form-control" id="membershipUserId" placeholder="Enter your User ID" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="membershipType" class="form-label">Membership Type:</label>
+                                    <select class="form-select" id="membershipType" required>
+                                        <option value="">Select a plan</option>
+                                        <option value="basic">Basic (₹500/year)</option>
+                                        <option value="premium">Premium (₹1200/year)</option>
+                                        <option value="vip">VIP (₹2500/year)</option>
+                                    </select>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" id="calculateMembershipBtn" class="btn btn-proceed-pay-membership">Proceed to Pay</button>
+                                </div>
+                            </form>
+
+                            <div id="membershipFeeDetails" class="fine-details membership-info mt-4 d-none">
+                                <h5 class="mb-3">Membership Details:</h5>
+                                <p>User ID: <span id="displayMembershipUserId"></span></p>
+                                <p>Selected Plan: <span id="selectedMembershipPlan"></span></p>
+                                <div class="total-fine">Membership Fee: ₹<span id="membershipFeeAmount">0.00</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-success mt-3 d-none w-100" id="paymentSuccess" role="alert">
+                    ✅ Payment simulated successfully!
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Dummy data for borrowed books with due dates
+        const borrowedBooksData = {
+            "user123": [
+                { book: "Atomic Habits", dueDate: "2025-05-20" },
+                { book: "Sapiens", dueDate: "2025-06-05" }
+            ],
+            "user456": [
+                { book: "Harry Potter", dueDate: "2025-05-10" },
+                { book: "The Great Gatsby", dueDate: "2025-05-25" }
+            ],
+            "user789": [
+                { book: "The Alchemist", dueDate: "2025-06-15" }
+            ],
+        };
+
+        const FINE_PER_DAY = 10;
+
+        // --- Sliding Panel Elements ---
+        const showFinesBtn = document.getElementById('showFinesBtn');
+        const showMembershipBtn = document.getElementById('showMembershipBtn');
+        const slidesWrapper = document.querySelector('.slides-wrapper');
+        const finesPanel = document.getElementById('finesPanel');
+        const membershipPanel = document.getElementById('membershipPanel');
+
+        showFinesBtn.addEventListener('click', () => {
+            slidesWrapper.style.transform = 'translateX(0%)';
+            showFinesBtn.classList.add('active');
+            showMembershipBtn.classList.remove('active');
+            // Hide membership details when switching to fines
+            membershipFeeDetailsDiv.classList.add('d-none'); 
+            paymentSuccessAlert.classList.add('d-none'); // Hide success message
+        });
+
+        showMembershipBtn.addEventListener('click', () => {
+            slidesWrapper.style.transform = 'translateX(-50%)';
+            showMembershipBtn.classList.add('active');
+            showFinesBtn.classList.remove('active');
+            // Hide fine details when switching to membership
+            fineDetailsDiv.classList.add('d-none');
+            paymentSuccessAlert.classList.add('d-none'); // Hide success message
+        });
+
+
+        // --- Fine Payment Elements ---
+        const fineCheckForm = document.getElementById("fineCheckForm");
+        const fineUserIdInput = document.getElementById("fineUserId");
+        const fineDetailsDiv = document.getElementById("fineDetails");
+        const overdueBooksList = document.getElementById("overdueBooksList");
+        const totalFineAmountSpan = document.getElementById("totalFineAmount");
+        const payRazorpayBtn = document.getElementById("payRazorpayBtn");
+        const paymentSuccessAlert = document.getElementById("paymentSuccess");
+
+
+        let currentTotalFine = 0; // Variable to store the fine for redirection
+
+        fineCheckForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            checkOverdueAndFines();
+        });
+
+        payRazorpayBtn.addEventListener("click", function () {
+            const userId = fineUserIdInput.value.trim();
+            if (currentTotalFine > 0) {
+                // Redirect to Razorpay checkout page with details
+                window.location.href = `razorpay_checkout.html?amount=${currentTotalFine.toFixed(2)}&userId=${userId}&type=fine`;
+            } else {
+                alert("No fines to pay.");
+            }
+        });
+
+        function checkOverdueAndFines() {
+            const userId = fineUserIdInput.value.trim();
+            overdueBooksList.innerHTML = '';
+            totalFineAmountSpan.textContent = '0.00';
+            payRazorpayBtn.classList.add('d-none');
+            paymentSuccessAlert.classList.add('d-none');
+            fineDetailsDiv.classList.remove('no-dues', 'alert-danger');
+            fineDetailsDiv.classList.remove('membership-info');
+
+
+            if (!userId) {
+                fineDetailsDiv.classList.add('d-none');
+                alert("Please enter a User ID for fine check.");
+                return;
+            }
+
+            const userBooks = borrowedBooksData[userId];
+            currentTotalFine = 0;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (userBooks && userBooks.length > 0) {
+                let hasOverdue = false;
+                userBooks.forEach(bookRecord => {
+                    const dueDate = new Date(bookRecord.dueDate);
+                    dueDate.setHours(0, 0, 0, 0);
+
+                    if (dueDate < today) {
+                        hasOverdue = true;
+                        const diffTime = Math.abs(today.getTime() - dueDate.getTime());
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        const bookFine = diffDays * FINE_PER_DAY;
+                        currentTotalFine += bookFine;
+
+                        const listItem = document.createElement('li');
+                        listItem.innerHTML = `<strong>${bookRecord.book}</strong> (Due: ${bookRecord.dueDate}) - Overdue by ${diffDays} days - Fine: ₹${bookFine.toFixed(2)}`;
+                        overdueBooksList.appendChild(listItem);
+                    }
+                });
+
+                if (hasOverdue) {
+                    fineDetailsDiv.classList.remove("d-none");
+                    fineDetailsDiv.classList.add("alert-danger");
+                    fineDetailsDiv.querySelector('h5').textContent = 'Overdue Books:';
+                    fineDetailsDiv.querySelector('h5').style.color = '#dc3545';
+                    fineDetailsDiv.querySelector('.total-fine').style.color = '#dc3545';
+
+                    totalFineAmountSpan.textContent = currentTotalFine.toFixed(2);
+                    payRazorpayBtn.classList.remove('d-none');
+                } else {
+                    fineDetailsDiv.classList.remove("d-none");
+                    fineDetailsDiv.classList.add('no-dues');
+                    fineDetailsDiv.querySelector('h5').textContent = 'No Overdue Books Found!';
+                    fineDetailsDiv.querySelector('h5').style.color = '#28a745';
+                    fineDetailsDiv.querySelector('.total-fine').style.color = '#28a745';
+
+                    overdueBooksList.innerHTML = '<li>You currently have no overdue books.</li>';
+                    totalFineAmountSpan.textContent = '0.00';
+                    payRazorpayBtn.classList.add('d-none');
+                }
+            } else {
+                fineDetailsDiv.classList.remove("d-none");
+                fineDetailsDiv.classList.add('no-dues');
+                fineDetailsDiv.querySelector('h5').textContent = 'No Borrowed Books Found for this User ID.';
+                fineDetailsDiv.querySelector('h5').style.color = '#28a745';
+                fineDetailsDiv.querySelector('.total-fine').style.color = '#28a745';
+
+                overdueBooksList.innerHTML = '<li>This User ID has no record of borrowed books.</li>';
+                totalFineAmountSpan.textContent = '0.00';
+                payRazorpayBtn.classList.add('d-none');
+            }
+        }
+
+        // --- Membership Payment Elements ---
+        const membershipPaymentForm = document.getElementById("membershipPaymentForm");
+        const membershipUserIdInput = document.getElementById("membershipUserId");
+        const membershipTypeSelect = document.getElementById("membershipType");
+        const membershipFeeDetailsDiv = document.getElementById("membershipFeeDetails");
+        const displayMembershipUserIdSpan = document.getElementById("displayMembershipUserId");
+        const selectedMembershipPlanSpan = document.getElementById("selectedMembershipPlan");
+        const membershipFeeAmountSpan = document.getElementById("membershipFeeAmount");
+        const calculateMembershipBtn = document.getElementById("calculateMembershipBtn"); // This is the 'Proceed to Pay' button
+
+        const membershipCosts = {
+            "basic": 500,
+            "premium": 1200,
+            "vip": 2500
+        };
+
+        let currentMembershipFee = 0; // Variable to store the membership fee for redirection
+
+        membershipPaymentForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+            proceedToPayMembership();
+        });
+        
+        function proceedToPayMembership() {
+            const userId = membershipUserIdInput.value.trim();
+            const membershipType = membershipTypeSelect.value;
+            const selectedPlanText = membershipTypeSelect.options[membershipTypeSelect.selectedIndex].text;
+
+            paymentSuccessAlert.classList.add('d-none');
+            membershipFeeDetailsDiv.classList.remove('no-dues', 'alert-danger');
+            membershipFeeDetailsDiv.classList.add('membership-info'); // Apply membership styling
+
+            if (!userId || !membershipType) {
+                membershipFeeDetailsDiv.classList.add('d-none');
+                alert("Please enter User ID and select a Membership Type.");
+                return;
+            }
+
+            currentMembershipFee = membershipCosts[membershipType];
+
+            if (currentMembershipFee > 0) {
+                // Display details
+                membershipFeeDetailsDiv.classList.remove('d-none');
+                displayMembershipUserIdSpan.textContent = userId;
+                selectedMembershipPlanSpan.textContent = selectedPlanText;
+                membershipFeeAmountSpan.textContent = currentMembershipFee.toFixed(2);
+                
+                // Redirect to Razorpay checkout page with details
+                window.location.href = `razorpay_checkout.html?amount=${currentMembershipFee.toFixed(2)}&userId=${userId}&type=membership&plan=${membershipType}`;
+            } else {
+                membershipFeeDetailsDiv.classList.add('d-none');
+                alert("Please select a valid membership type.");
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Return a Book</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794'); /* Library-themed image */
+      background-size: cover;
+      background-position: center;
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+    }
+    
+    .form-container {
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 600px;
+      margin: 5% auto;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+    h2 {
+      text-align: center;
+      font-weight: bold;
+    }
+    /* Navbar container */
+.navbar {
+  background: linear-gradient(45deg, #141e30, #243b55);
+  box-shadow: 0 2px 10px rgba(30, 144, 255, 0.5);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding: 0.75rem 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Navbar brand (logo/text) */
+.navbar-brand {
+  font-size: 1.8rem;
+  color: #1e90ff;
+  font-weight: 700;
+  user-select: none;
+  text-shadow: 0 0 8px #1e90ff;
+  transition: color 0.3s ease;
+}
+
+.navbar-brand:hover {
+  color: #00eaff;
+  text-shadow: 0 0 14px #00eaff;
+}
+
+/* Navbar links container */
+.navbar-nav {
+  display: flex;
+  gap: 1.25rem;
+}
+
+/* Individual nav links */
+.nav-link {
+  color: #aad4ff !important;
+  font-weight: 600;
+  font-size: 1.1rem;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+/* Hover and active styles */
+.nav-link:hover,
+.nav-link.active {
+  color: #00eaff !important;
+  text-shadow: 0 0 12px #00eaff;
+}
+
+/* Underline effect on hover */
+.nav-link::after {
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background: #00eaff;
+  transition: width 0.3s ease;
+  border-radius: 2px;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .navbar-brand {
+    font-size: 1.4rem;
+  }
+  .nav-link {
+    font-size: 1rem;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">📖 Library</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">Home</a> </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="return.html">Return</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="form-container">
+      <h2>Return a Book</h2>
+      <form id="returnForm">
+        <div class="mb-3">
+          <label for="name" class="form-label">Your Name:</label>
+          <input type="text" class="form-control" id="name" placeholder="Enter your name" required>
+        </div>
+        <div class="mb-3">
+          <label for="userId" class="form-label">User ID:</label>
+          <input type="text" class="form-control" id="userId" placeholder="Enter your User ID" required>
+        </div>
+        <div class="mb-3">
+          <label for="bookReturnSelect" class="form-label">Book to Return:</label>
+          <select class="form-select" id="bookReturnSelect" required>
+            <option value="" selected disabled>-- Select a Book --</option>
+            <option value="Atomic Habits by James Clear">Atomic Habits by James Clear</option>
+            <option value="Harry Potter by J.K. Rowling">Harry Potter by J.K. Rowling</option>
+            <option value="The Alchemist by Paulo Coelho">The Alchemist by Paulo Coelho</option>
+            <option value="Psychology of Money by Morgan Housel">Psychology of Money by Morgan Housel</option>
+            <option value="Sapiens by Yuval Noah Harari">Sapiens by Yuval Noah Harari</option>
+            <option value="Deep Work by Cal Newport">Deep Work by Cal Newport</option>
+            <option value="1984 by George Orwell">1984 by George Orwell</option>
+            <option value="To Kill a Mockingbird by Harper Lee">To Kill a Mockingbird by Harper Lee</option>
+            <option value="The Great Gatsby by F. Scott Fitzgerald">The Great Gatsby by F. Scott Fitzgerald</option>
+            <option value="Pride and Prejudice by Jane Austen">Pride and Prejudice by Jane Austen</option>
+            <option value="The Catcher in the Rye by J.D. Salinger">The Catcher in the Rye by J.D. Salinger</option>
+            <option value="Educated by Tara Westover">Educated by Tara Westover</option>
+            <option value="Becoming by Michelle Obama">Becoming by Michelle Obama</option>
+            <option value="The Wright Brothers by David McCullough">The Wright Brothers by David McCullough</option>
+            <option value="Into the Wild by Jon Krakauer">Into the Wild by Jon Krakauer</option>
+            <option value="A Brief History of Time by Stephen Hawking">A Brief History of Time by Stephen Hawking</option>
+            <option value="The Gene by Siddhartha Mukherjee">The Gene by Siddhartha Mukherjee</option>
+            <option value="Cosmos by Carl Sagan">Cosmos by Carl Sagan</option>
+            <option value="Rich Dad Poor Dad by Robert T. Kiyosaki">Rich Dad Poor Dad by Robert T. Kiyosaki</option>
+            <option value="The Psychology of Money by Morgan Housel">The Psychology of Money by Morgan Housel</option>
+          </select>
+        </div>
+        <div class="d-flex gap-2 justify-content-center mt-3">
+          <button type="button" id="checkDueBtn" class="btn btn-warning">Check Due</button>
+          <button type="submit" id="returnBtn" class="btn btn-success d-none">Return</button>
+          <button type="button" id="notifyBtn" class="btn btn-danger d-none">Notify User</button>
+        </div>
+      </form>
+      <div class="alert alert-success mt-3 d-none" id="returnSuccess"></div>
+      <div class="alert alert-info mt-3 d-none" id="dueStatus"></div>
+    </div>
+  </div>
+
+  <script>
+    const checkDueBtn = document.getElementById("checkDueBtn");
+    const returnBtn = document.getElementById("returnBtn");
+    const notifyBtn = document.getElementById("notifyBtn");
+    const dueStatus = document.getElementById("dueStatus");
+
+    checkDueBtn.addEventListener("click", function () {
+      const name = document.getElementById("name").value.trim();
+      const userId = document.getElementById("userId").value.trim();
+      const book = document.getElementById("bookReturnSelect").value;
+
+      if (!name || !userId || !book) {
+        dueStatus.className = "alert alert-warning mt-3";
+        dueStatus.textContent = "Please fill all fields to check due status.";
+        dueStatus.classList.remove("d-none");
+        return;
+      }
+
+      const isDue = Math.random() < 0.5;
+
+      dueStatus.classList.remove("d-none");
+      if (isDue) {
+        dueStatus.className = "alert alert-danger mt-3";
+        dueStatus.textContent = `The book "${book}" is overdue.`;
+        returnBtn.classList.add("d-none");
+        notifyBtn.classList.remove("d-none");
+      } else {
+        dueStatus.className = "alert alert-success mt-3";
+        dueStatus.textContent = `No dues found. You can return "${book}".`;
+        returnBtn.classList.remove("d-none");
+        notifyBtn.classList.add("d-none");
+      }
+    });
+
+    document.getElementById("returnForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const userId = document.getElementById("userId").value.trim();
+      const book = document.getElementById("bookReturnSelect").value;
+
+      if (name && userId && book) {
+        const alertBox = document.getElementById("returnSuccess");
+        alertBox.innerHTML = `✅ <strong>${name}</strong> (User ID: <strong>${userId}</strong>) has returned <strong>${book}</strong> successfully.`;
+        alertBox.classList.remove("d-none");
+        document.getElementById("returnForm").reset();
+        returnBtn.classList.add("d-none");
+        notifyBtn.classList.add("d-none");
+        dueStatus.classList.add("d-none");
+
+        setTimeout(() => {
+          alertBox.classList.add("d-none");
+        }, 3000);
+      }
+    });
+
+    notifyBtn.addEventListener("click", () => {
+      const name = document.getElementById("name").value.trim();
+      const userId = document.getElementById("userId").value.trim();
+      const book = document.getElementById("bookReturnSelect").value;
+      alert(`📧 Notification sent to ${name} (User ID: ${userId}) regarding overdue for "${book}".`);
+    });
+  </script>
+</body>
+</html>

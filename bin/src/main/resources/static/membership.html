@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Member Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+    body {
+      background-image: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-attachment: fixed;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255, 255, 255, 0.7);
+      z-index: -1;
+    }
+
+    .navbar {
+      background-color: transparent;
+      padding: 1rem 2rem;
+    }
+
+    .navbar-brand {
+      font-weight: 500;
+      color: #4a90e2;
+      text-decoration: none;
+    }
+
+    .navbar-brand:hover {
+      text-decoration: underline;
+    }
+
+    .form-container {
+      max-width: 600px;
+      margin: 20px auto 60px;
+      background: #ffffffee;
+      padding: 40px 35px;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h4 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .form-label {
+      font-weight: 500;
+      color: #34495e;
+    }
+
+    .form-control {
+      border-radius: 8px;
+    }
+
+    .form-control:focus {
+      border-color: #4a90e2;
+      box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+    }
+
+    .btn-primary {
+      background-color: #4a90e2;
+      border: none;
+      border-radius: 8px;
+      font-weight: 500;
+      padding: 0.5rem 1.5rem;
+      font-size: 1rem;
+    }
+
+    .btn-primary:hover {
+      background-color: #3b78c0;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="navbar-brand" href="index.html">← Back to Home</a>
+</nav>
+
+<div class="form-container">
+  <h4>Register New Member</h4>
+  <form id="memberForm">
+    <div class="mb-3">
+      <label for="memberId" class="form-label">Member ID</label>
+      <input type="text" class="form-control" id="memberId" pattern="M\d{6}" title="Member ID must start with 'M' followed by 6 digits" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="name" class="form-label">Name</label>
+      <input type="text" class="form-control" id="name" pattern="[A-Za-z\s]{3,40}" title="Name must contain only alphabets and be between 3 and 40 characters" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" id="email" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="phone" class="form-label">Phone</label>
+      <input type="text" class="form-control" id="phone" maxlength="10" pattern="\d{10}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="address" class="form-label">Address</label>
+      <textarea class="form-control" id="address" rows="3" required></textarea>
+    </div>
+
+    <div class="d-grid">
+      <button type="submit" class="btn btn-primary" id="payment">Pay</button>
+    </div>
+  </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $('#memberForm').on('submit', function(e) {
+    e.preventDefault();
+
+    // Name validation: alphabets only, min 3, max 40 characters
+    const nameInput = $('#name');
+    const nameValue = nameInput.val();
+    const namePattern = /^[A-Za-z\s]{3,40}$/; // Allows alphabets and spaces, 3 to 40 characters
+    if (!namePattern.test(nameValue)) {
+      alert("Name can only contain alphabets and must be between 3 and 40 characters long.");
+      nameInput.focus();
+      return;
+    }
+
+    // Member ID validation
+    const memberIdInput = $('#memberId');
+    const memberIdPattern = /^M\d{6}$/; // Starts with M followed by 6 digits
+    if (!memberIdPattern.test(memberIdInput.val())) {
+      alert("Member ID must start with 'M' followed by 6 digits (e.g., M123456).");
+      memberIdInput.focus();
+      return;
+    }
+
+    // Email validation: must contain '@' and '.com'
+    const emailInput = $('#email');
+    const emailValue = emailInput.val();
+    if (emailValue.indexOf('@') === -1 || !emailValue.endsWith('.com')) {
+      alert("Email must contain '@' and end with '.com'.");
+      emailInput.focus();
+      return;
+    }
+
+    const member = {
+      memberId: $('#memberId').val(),
+      name: nameValue,
+      email: emailValue,
+      phone: $('#phone').val(),
+      address: $('#address').val()
+    };
+    $("#payment").click(function () {
+                window.location.href = "payment.html";
+            });
+
+    console.log("Member Data:", member);
+    alert("Payment successful!");
+    this.reset();
+  });
+</script>
+</body>
+</html>

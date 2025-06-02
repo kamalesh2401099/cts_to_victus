@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add New Book</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+  background-image: url('https://img.freepik.com/premium-photo/book-library-with-old-open-textbook-stack-piles-literature-text-archive-reading-desk_779468-5822.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;        
+  background-position: center center;
+  background-attachment: fixed;    
+  font-family: 'Segoe UI', sans-serif;
+}
+ 
+    .form-container {
+      max-width: 500px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+ 
+    .form-label {
+      font-weight: 500;
+    }
+ 
+    .btn-primary {
+      background-color: #1976d2;
+      border: none;
+    }
+ 
+    .btn-primary:hover {
+      background-color: #1565c0;
+    }
+ 
+    h4 {
+      font-weight: bold;
+      text-align: center;
+      color: #333;
+      margin-bottom: 25px;
+    }
+ 
+    #idError {
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form-container">
+      <h4>Add New Book</h4>
+      <form id="addBookForm">
+        <div class="mb-3">
+          <label for="bookId" class="form-label">Book ID</label>
+          <input type="number" class="form-control" id="bookId" required>
+          <div class="form-text text-danger" id="idError" style="display:none;">Book ID must be unique.</div>
+        </div>
+        <div class="mb-3">
+          <label for="title" class="form-label">Title</label>
+          <input type="text" class="form-control" id="title" required>
+        </div>
+        <div class="mb-3">
+          <label for="author" class="form-label">Author</label>
+          <input type="text" class="form-control" id="author" required>
+        </div>
+        <div class="mb-3">
+          <label for="genre" class="form-label">Genre</label>
+          <input type="text" class="form-control" id="genre">
+        </div>
+        <div class="mb-3">
+          <label for="isbn" class="form-label">ISBN (10 digits)</label>
+          <input type="text" class="form-control" id="isbn" required pattern="\d{10}">
+        </div>
+        <div class="mb-3">
+          <label for="yearPublished" class="form-label">Year Published</label>
+          <input type="number" class="form-control" id="yearPublished">
+        </div>
+        <div class="mb-3">
+          <label for="availableCopies" class="form-label">Available Copies</label>
+          <input type="number" class="form-control" id="availableCopies" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Add Book</button>
+      </form>
+    </div>
+  </div>
+ 
+  <script>
+    const existingBookIds = [1, 2, 3, 4, 5];
+ 
+    document.getElementById("addBookForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+ 
+      const bookId = parseInt(document.getElementById("bookId").value);
+      const isbn = document.getElementById("isbn").value;
+ 
+      if (existingBookIds.includes(bookId)) {
+        document.getElementById("idError").style.display = "block";
+        return;
+      } else {
+        document.getElementById("idError").style.display = "none";
+      }
+ 
+      if (!/^\d{10}$/.test(isbn)) {
+        alert("ISBN must be exactly 10 digits.");
+        return;
+      }
+ 
+      alert("Book added successfully!");
+    });
+  </script>
+</body>
+</html>
+ 

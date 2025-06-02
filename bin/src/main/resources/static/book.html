@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books table</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .table th, .table td {
+            text-align: center;
+        }
+        .btn {
+            margin: 2px;
+        }
+        .copies-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .copies-control button {
+            margin: 0 5px;
+        }
+        body {
+            background-image: url("books.png");
+            background-size: cover;
+            background-repeat: no-repeat;
+             background-position: center;
+         }
+         .table {
+     background: white;
+     border-radius: 10px;
+     overflow: hidden;
+   }
+ </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center "><span class="badge bg-primary float-end">Book Management</span></h2>
+        <table class="table table-bordered table-hover shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>Book ID</th>
+                    <th>Title of the Book</th>
+                    <th>Author Name</th>
+                    <th>Available Copies</th>
+                    <th>Delete</th>
+                    
+                </tr>
+            </thead>
+            <tbody id="bookTable">
+                <!-- Example row -->
+                <tr>
+                    <td>1</td>
+                    <td>To Kill a Mockingbird</td>
+                    <td>Harper Lee</td>
+                    <td>
+                        <div class="copies-control">
+                            <button class="btn btn-success" onclick="addCopy(this)">+</button>
+                            <span class="copies-number">10</span>
+                            <button class="btn btn-warning" onclick="removeCopy(this)">-</button>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
+                    </td>
+                    
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>1984</td>
+                    <td>George Orwell</td>
+                    <td>
+                        <div class="copies-control">
+                            <button class="btn btn-success" onclick="addCopy(this)">+</button>
+                            <span class="copies-number">8</span>
+                            <button class="btn btn-warning" onclick="removeCopy(this)">-</button>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
+                    </td>
+                   
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>The Great Gatsby</td>
+                    <td>F. Scott Fitzgerald</td>
+                    <td>
+                        <div class="copies-control">
+                            <button class="btn btn-success" onclick="addCopy(this)">+</button>
+                            <span class="copies-number">12</span>
+                            <button class="btn btn-warning" onclick="removeCopy(this)">-</button>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
+                    </td>
+                    
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Pride and Prejudice</td>
+                    <td>Jane Austen</td>
+                    <td>
+                        <div class="copies-control">
+                            <button class="btn btn-success" onclick="addCopy(this)">+</button>
+                            <span class="copies-number">15</span>
+                            <button class="btn btn-warning" onclick="removeCopy(this)">-</button>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
+                    </td>
+                    
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>The Catcher in the Rye</td>
+                    <td>J.D. Salinger</td>
+                    <td>
+                        <div class="copies-control">
+                            <button class="btn btn-success" onclick="addCopy(this)">+</button>
+                            <span class="copies-number">7</span>
+                            <button class="btn btn-warning" onclick="removeCopy(this)">-</button>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
+                    </td>
+                 
+                </tr>
+                
+            </tbody>
+        </table>
+    </table>
+
+    <div class="text-center mt-3">
+        <button class="btn btn-primary" onclick="navigateToAddPage()">Add New Book</button>
+    </div>
+    
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+       
+    function deleteRow(button) {
+        $(button).closest('tr').remove();
+    }
+
+    function addCopy(button) {
+        var row = $(button).closest('tr');
+        var copiesCell = row.find('.copies-number'); // Corrected selector
+        var currentCopies = parseInt(copiesCell.text());
+        if (currentCopies >= 0) {
+            copiesCell.text(currentCopies + 1);
+        }
+    }
+
+    function removeCopy(button) {
+        var row = $(button).closest('tr');
+        var copiesCell = row.find('.copies-number');
+        var currentCopies = parseInt(copiesCell.text());
+        if (currentCopies > 0) {
+            copiesCell.text(currentCopies - 1);
+        }
+    }
+
+    function navigateToAddPage() {
+        window.location.href = 'addBook.html'; // Change this to the actual URL of your add book page
+    }
+</script>
+
+    
+</body>
+</html>

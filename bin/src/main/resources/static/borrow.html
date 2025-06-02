@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Borrow a Book</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  
+  <style>
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f') no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+      color: #fff;
+    }
+
+    .overlay {
+      background: rgba(0, 0, 0, 0.65);
+      min-height: 100vh;
+      padding-top: 70px;
+    }
+
+    .navbar {
+      background-color: #1f1f1f !important;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .container-box {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      max-width: 550px;
+      margin: auto;
+      color: #333;
+      animation: fadeIn 1.2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      font-weight: 600;
+      color: #6a1b9a;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6a1b9a, #8e24aa);
+      border: none;
+      padding: 10px 25px;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #8e24aa, #6a1b9a);
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(106, 27, 154, 0.4);
+    }
+
+    .form-control, .form-select {
+      border-radius: 10px;
+    }
+
+    #borrowSuccess {
+      animation: fadeInSuccess 0.6s ease-in-out;
+      border-radius: 10px;
+    }
+
+    @keyframes fadeInSuccess {
+      0% { transform: translateY(20px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="overlay">
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand fw-bold fs-4" href="index.html">📖 Library</a>
+        <div class="collapse navbar-collapse">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <section class="container py-5">
+      <div class="container-box">
+        <h2 class="mb-4">Borrow a Book</h2>
+        <form id="borrowForm">
+          <div class="mb-3">
+            <label for="name" class="form-label">Your Name:</label>
+            <input type="text" class="form-control" id="name" placeholder="Enter your name" required>
+          </div>
+          <div class="mb-3">
+            <label for="userId" class="form-label">User ID:</label>
+            <input type="text" class="form-control" id="userId" placeholder="Enter your User ID" required>
+          </div>
+          <div class="mb-3">
+            <label for="bookSelect" class="form-label">Choose a Book:</label>
+            <select class="form-select" id="bookSelect" required>
+              <option value="" selected disabled>-- Select a Book --</option>
+              <option value="Atomic Habits by James Clear">Atomic Habits by James Clear (Available)</option>
+              <option value="Harry Potter by J.K. Rowling" disabled>Harry Potter by J.K. Rowling (Unavailable)</option>
+              <option value="The Alchemist by Paulo Coelho">The Alchemist by Paulo Coelho (Available)</option>
+              <option value="Psychology of Money by Morgan Housel">Psychology of Money by Morgan Housel (Available)</option>
+              <option value="Sapiens by Yuval Noah Harari">Sapiens by Yuval Noah Harari (Available)</option>
+              <option value="Deep Work by Cal Newport" disabled>Deep Work by Cal Newport (Unavailable)</option>
+              <option value="1984 by George Orwell">1984 by George Orwell (Available)</option>
+              <option value="To Kill a Mockingbird by Harper Lee" disabled>To Kill a Mockingbird by Harper Lee (Unavailable)</option>
+              <option value="The Great Gatsby by F. Scott Fitzgerald">The Great Gatsby by F. Scott Fitzgerald (Available)</option>
+              <option value="Pride and Prejudice by Jane Austen" disabled>Pride and Prejudice by Jane Austen (Unavailable)</option>
+              <option value="The Catcher in the Rye by J.D. Salinger">The Catcher in the Rye by J.D. Salinger (Available)</option>
+              <option value="Educated by Tara Westover">Educated by Tara Westover (Available)</option>
+              <option value="Becoming by Michelle Obama" disabled>Becoming by Michelle Obama (Unavailable)</option>
+              <option value="The Wright Brothers by David McCullough">The Wright Brothers by David McCullough (Available)</option>
+              <option value="Into the Wild by Jon Krakauer" disabled>Into the Wild by Jon Krakauer (Unavailable)</option>
+              <option value="A Brief History of Time by Stephen Hawking">A Brief History of Time by Stephen Hawking (Available)</option>
+              <option value="The Gene by Siddhartha Mukherjee">The Gene by Siddhartha Mukherjee (Available)</option>
+              <option value="Cosmos by Carl Sagan" disabled>Cosmos by Carl Sagan (Unavailable)</option>
+              <option value="Rich Dad Poor Dad by Robert T. Kiyosaki">Rich Dad Poor Dad by Robert T. Kiyosaki (Available)</option>
+              <option value="The Psychology of Money by Morgan Housel" disabled>The Psychology of Money by Morgan Housel (Unavailable)</option>
+            </select>
+          </div>
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary">Borrow</button>
+          </div>
+        </form>
+
+        <div class="alert alert-success mt-3 d-none" id="borrowSuccess" role="alert">
+          ✅ You have successfully borrowed the book!
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    document.getElementById("borrowForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const userId = document.getElementById("userId").value.trim();
+      const book = document.getElementById("bookSelect").value;
+
+      if (name && userId && book) {
+        const alertBox = document.getElementById("borrowSuccess");
+        alertBox.innerHTML = `✅ <strong>${name}</strong> (User ID: <strong>${userId}</strong>) has successfully borrowed <strong>${book}</strong>!`;
+        alertBox.classList.remove("d-none");
+
+        setTimeout(() => {
+          document.getElementById("borrowForm").reset();
+          alertBox.classList.add("d-none");
+        }, 3000);
+      }
+    });
+  </script>
+
+</body>
+</html>
